@@ -1,0 +1,40 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@paystack/inline-js": "^2.22.7",
+    "apexcharts": "^3.49.0",
+    "chart.js": "^4.4.2",
+    "date-fns": "^3.6.0",
+    "moment": "^2.30.1",
+    "node": "^22.9.0",
+    "nuxt": "^3.11.1",
+    "nuxt-vue-multiselect": "^1.0.4",
+    "nuxt3-notifications": "^1.2.0",
+    "perfect-scrollbar": "^1.5.5",
+    "vue": "^3.4.21",
+    "vue-chartjs": "^5.3.1",
+    "vue-router": "^4.3.0",
+    "vue-tabler-icons": "2.9.0",
+    "vue3-apexcharts": "^1.5.2",
+    "vue3-perfect-scrollbar": "^1.6.1"
+  },
+  "devDependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "nuxt3-paystack": "^1.0.3",
+    "pinia": "^2.1.7",
+    "sass": "^1.70.0",
+    "vite-plugin-vuetify": "^2.0.3",
+    "vite-svg-loader": "^5.1.0",
+    "vuetify": "^3.5.11"
+  }
+}
