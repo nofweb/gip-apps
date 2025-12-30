@@ -80,8 +80,6 @@ export default defineComponent({
       { name: "Post_paid", value: "Post Paid" },
     ]);
 
-
-    
     const marketers = ref([
       { name: "Chisom", value: "Chisom" },
       { name: "Ada", value: "Ada" },
