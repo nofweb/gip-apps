@@ -57,7 +57,7 @@
                  <v-col cols="12" md="4" >
                 <v-text-field
                   label="Company Name"
-                  v-model="policyStore.policyData.company_address"
+                  v-model="policyStore.policyData.company_name"
                 >
                 </v-text-field>
               </v-col> 
@@ -326,6 +326,7 @@ export default defineComponent({
       niid_status: "",
       status: "",
       insured_name: "",
+      company_name: "",
       contact_address: "",
       phone_number: "",
       email: "",
@@ -569,22 +570,22 @@ export default defineComponent({
       });
       return;
     }
-    if (policyStore.policyData.holder_type == 'Individual' && policyStore.policyData.contact_address == "") {
-      notify({
-        title: "failed!",
-        type: "error",
-        text: "Please Enter  Contact Address",
-      });
-      return;
-    }
-      if (policyStore.policyData.holder_type == 'Corporate' && policyStore.policyData.company_address == "") {
-      notify({
-        title: "failed!",
-        type: "error",
-        text: "Please Enter Company Address",
-      });
-      return;
-    }
+    // if (policyStore.policyData.holder_type == 'Individual' && policyStore.policyData.contact_address == "") {
+    //   notify({
+    //     title: "failed!",
+    //     type: "error",
+    //     text: "Please Enter  Contact Address",
+    //   });
+    //   return;
+    // }
+    //   if (policyStore.policyData.holder_type == 'Corporate' && policyStore.policyData.company_address == "") {
+    //   notify({
+    //     title: "failed!",
+    //     type: "error",
+    //     text: "Please Enter Company Address",
+    //   });
+    //   return;
+    // }
     if (policyStore.policyData.phone_number == "") {
       notify({
         title: "failed!",
@@ -695,6 +696,7 @@ export default defineComponent({
     variance: policyStore.policyData.variant,
     first_name: policyStore.policyData.first_name,
     surname: policyStore.policyData.surname,
+    company_name: policyStore.policyData.company_name,
     contact_address: policyStore.policyData.contact_address || policyStore.policyData.company_address,
     phone_number: policyStore.policyData.phone_number,
     email: policyStore.policyData.email,
@@ -829,24 +831,24 @@ async function initiatePaystack() {
       });
       return;
     }
-    if (policyStore.policyData.holder_type == 'Individual' && policyStore.policyData.contact_address == "") {
-      notify({
-        title: "failed!",
-        type: "error",
-        text: "Please Enter  Contact Address",
-      });
-      return;
-    }
-      if (policyStore.policyData.holder_type == 'Corporate' && policyStore.policyData.company_address == "") {
-      notify({
-        title: "failed!",
-        type: "error",
-        text: "Please Enter Company Address",
-      });
-      return;
-    }
+    // if (policyStore.policyData.holder_type == 'Individual' && policyStore.policyData.contact_address == "") {
+    //   notify({
+    //     title: "failed!",
+    //     type: "error",
+    //     text: "Please Enter  Contact Address",
+    //   });
+    //   return;
+    // }
+    //   if (policyStore.policyData.holder_type == 'Corporate' && policyStore.policyData.company_address == "") {
+    //   notify({
+    //     title: "failed!",
+    //     type: "error",
+    //     text: "Please Enter Company Address",
+    //   });
+    //   return;
+    // }
     if (policyStore.policyData.phone_number == "") {
-      notify({
+      nottificatiofy({
         title: "failed!",
         type: "error",
         text: "Please Enter Phone Number",
@@ -1010,6 +1012,8 @@ async function initiatePaystack() {
           variance: policyStore.policyData.variant,
           first_name: policyStore.policyData.first_name,
           surname: policyStore.policyData.surname,
+          company_name: policyStore.policyData.company_name,
+
           contact_address: policyStore.policyData.contact_address || policyStore.policyData.company_address,
           phone_number: policyStore.policyData.phone_number,
           email: policyStore.policyData.email,

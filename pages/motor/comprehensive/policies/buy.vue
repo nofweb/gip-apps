@@ -57,7 +57,7 @@
                  <v-col cols="12" md="4" >
                 <v-text-field
                   label="Company Name"
-                  v-model="policyStore.policyData.company_address"
+                  v-model="policyStore.policyData.company_name"
                 >
                 </v-text-field>
               </v-col> 
@@ -827,6 +827,7 @@ const formattedPremium = computed({
     first_name: policyStore.policyData.first_name,
     premium: policyStore.policyData.premium,
     surname: policyStore.policyData.surname,
+    company_name: policyStore.policyData.company_name,
     contact_address: policyStore.policyData.contact_address || policyStore.policyData.company_address,
     phone_number: policyStore.policyData.phone_number,
     email: policyStore.policyData.email,
@@ -1106,6 +1107,8 @@ async function initiatePaystack() {
           holder_type: policyStore.policyData.holder_type,
           variance: policyStore.policyData.variant,
           first_name: policyStore.policyData.first_name,
+              company_name: policyStore.policyData.company_name,
+
         surname: policyStore.policyData.surname,
           premium: policyStore.policyData.premium,
           contact_address: policyStore.policyData.contact_address || policyStore.policyData.company_address,
