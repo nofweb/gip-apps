@@ -251,7 +251,7 @@ export const usePolicyStore = defineStore("third_party", {
 
        async viewPolicy(id: number) {
       const response: any = await policyInstance({
-        path: `customer/my-policies/${id}`,
+        path: `customer/policy/${id}`,
         method: "get",
       });
       const { data, pending, error } = response;

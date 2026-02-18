@@ -37,10 +37,7 @@ const createInitialState = () => ({
       icon: "EyeIcon",
       listtitle: "View",
     },
-    {
-      icon: "EditIcon",
-      listtitle: "Resend",
-    },
+
     {
       icon: "TrashIcon",
       listtitle: "Print Certificate",
@@ -195,6 +192,22 @@ export const usePolicyStore = defineStore("comprehensive", {
       }
       return error;
     },
+
+
+    async viewPolicy(id: number) {
+      const response: any = await policyInstance({
+        path: `variance/policy/${id}`,
+        method: "get",
+      });
+      const { data, pending, error } = response;
+
+      if (data.value) {
+        return data.value;
+      }
+      return error;
+    },
+
+    
 
     async generateTransactionReference(payload: any) {
       const response: any = await policyInstance({

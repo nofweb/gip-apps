@@ -371,7 +371,7 @@ export default defineComponent({
     function linkId(item) {
       const id = item.id;
       console.log("The id is ", id);
-      router.push(`/motor/thirdparty/policies/${id}`);
+      router.push(`/motor/comprehensive/policies/${id}`);
       // router.push({ name: 'customer', params: { id: id } })
     }
 
