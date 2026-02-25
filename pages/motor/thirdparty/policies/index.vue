@@ -17,19 +17,28 @@
       <v-col cols="12" sm="12">
         <UiChildCard>
           <v-row>
-            <v-col cols="12" md="2">
+            <!-- <v-col cols="12" md="2">
               <v-text-field
                 prepend-inner-icon="mdi-magnify"
                 label="Search"
                 placeholder="Enter your search term"
               />
-            </v-col>
+            </v-col> -->
 
             <v-col cols="12" md="2">
               <v-select
                 v-model="store.policyData.status"
                 label="Status"
                 :items="status"
+                item-value="value"
+                item-title="name"
+              ></v-select>
+            </v-col>
+             <v-col cols="12" md="2">
+              <v-select
+                v-model="store.policyData.variant"
+                label="Variant"
+                :items="variant"
                 item-value="value"
                 item-title="name"
               ></v-select>
@@ -280,6 +289,13 @@ export default defineComponent({
       { name: "Not Sent", value: "N" },
     ]);
 
+    const variant = ref([
+      {name: "Third Party", value: "Third Party"},
+      {name: "Motor Protect Extra (Private Car)", value: "Motor Protect Extra (Private Car)"},
+      {name: "Motor Protect Extra (Private Bus)", value: "Motor Protect Extra (Private Bus)"},
+      {name: "Motor Protect Extra (Own Goods)", value: "Motor Protect Extra (Own Goods)"},
+    ])
+
     const totalItems = ref("0");
     const itemsPerPage = ref("");
 
@@ -321,6 +337,7 @@ export default defineComponent({
       try {
         const payload = {
           niid_status: store.policyData.status,
+          variance: store.policyData.variant,
           from_date: store.fromDateISO || "",
           to_date: store.toDateISO || "",
           page: page.value,
@@ -400,6 +417,7 @@ export default defineComponent({
       menu2,
       date,
       status,
+      variant,
       handleClick,
       linkId,
       myPolicy,

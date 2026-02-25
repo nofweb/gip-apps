@@ -146,8 +146,12 @@
           {name: "All", value: "all"},
           {name: "Sent", value: "sent"},
           {name: "Not Sent", value: "not_sent"},
+        ]);
 
+        const variant = ref([
+          {name: "", value: ""}
         ])
+
         // const all_policies = ref([{
         //     sn: "1",
         // }]);
@@ -198,7 +202,8 @@
         status,
         formattedDate,
         handleClick,
-        linkId
+        linkId,
+        
       };
     },
   });
