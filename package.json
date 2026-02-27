@@ -25,7 +25,8 @@
     "vue-router": "^4.3.0",
     "vue-tabler-icons": "2.9.0",
     "vue3-apexcharts": "^1.5.2",
-    "vue3-perfect-scrollbar": "^1.6.1"
+    "vue3-perfect-scrollbar": "^1.6.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@pinia/nuxt": "^0.5.1",

@@ -47,6 +47,7 @@ const createInitialState = () => ({
   policyData: {
     holderType: "",
     variant: "",
+    payment_plan: "",
     first_name: "",
     surname: "",
     phone_number: "",
@@ -103,6 +104,12 @@ const createInitialState = () => ({
       { name: "EZ Drive", value: "EZ Drive" },
       { name: "EZ Drive Plus", value: "EZ Drive Plus" },
       { name: "EZ Drive Elite", value: "EZ Drive Elite" },
+    ],
+
+    paymentPlan: [
+      {name: "Annually", value: "Annually"},
+      {name: "Quaterly", value: "Quaterly"},
+      {nam: "Half a Year", value: "Half a Year"}
     ],
 
     individualIdentification: [

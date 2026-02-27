@@ -8,8 +8,6 @@
         <nuxt-link to="/motor/thirdparty/policies/buy">
           <BaseButton mode="colored">Buy Policy</BaseButton>
         </nuxt-link>
-
-        <!-- <BaseButton @click="fetchData()" mode="colored">Fetch</BaseButton> -->
       </v-col>
     </v-row>
 
@@ -17,14 +15,6 @@
       <v-col cols="12" sm="12">
         <UiChildCard>
           <v-row>
-            <!-- <v-col cols="12" md="2">
-              <v-text-field
-                prepend-inner-icon="mdi-magnify"
-                label="Search"
-                placeholder="Enter your search term"
-              />
-            </v-col> -->
-
             <v-col cols="12" md="2">
               <v-select
                 v-model="store.policyData.status"
@@ -32,16 +22,17 @@
                 :items="status"
                 item-value="value"
                 item-title="name"
-              ></v-select>
+              />
             </v-col>
-             <v-col cols="12" md="2">
+
+            <v-col cols="12" md="2">
               <v-select
                 v-model="store.policyData.variant"
                 label="Variant"
                 :items="variant"
                 item-value="value"
                 item-title="name"
-              ></v-select>
+              />
             </v-col>
 
             <v-col cols="12" md="2">
@@ -61,13 +52,9 @@
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="props"
-                  ></v-text-field>
+                  />
                 </template>
-                <v-date-picker
-                  v-model="store.fromDate"
-                  @input="menu1 = false"
-                  no-title
-                ></v-date-picker>
+                <v-date-picker v-model="store.fromDate" @input="menu1 = false" no-title />
               </v-menu>
             </v-col>
 
@@ -88,13 +75,9 @@
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="props"
-                  ></v-text-field>
+                  />
                 </template>
-                <v-date-picker
-                  v-model="store.toDate"
-                  @input="menu2 = false"
-                  no-title
-                ></v-date-picker>
+                <v-date-picker v-model="store.toDate" @input="menu2 = false" no-title />
               </v-menu>
             </v-col>
 
@@ -106,20 +89,20 @@
             </v-col>
 
             <v-col cols="12" md="2">
-              <v-btn color="primary">
+              <v-btn
+                color="primary"
+                :loading="downloading"
+                :disabled="downloading"
+                @click="downloadAllFilteredCSV"
+              >
                 Download Report
                 <v-icon right>mdi-download</v-icon>
               </v-btn>
             </v-col>
           </v-row>
 
-          <!-- Skeleton while loading -->
           <div v-if="loading" class="pa-4">
-            <v-skeleton-loader
-              type="table"
-              class="mb-4"
-            />
-            <!-- optional: a second pass to mimic more rows -->
+            <v-skeleton-loader type="table" class="mb-4" />
             <v-skeleton-loader type="table" />
           </div>
 
@@ -130,19 +113,11 @@
             :items="policy"
             disable-pagination
           >
-            <!-- <template v-slot:[`item.sn`]="{ item, index }">
-              <td> {{ index + 1 }}</td>
-            </template> -->
-
-            <!-- <template v-slot:[`item.created_at`]="{ item }">
-              <td>{{ formatDate(item.created_at) }}</td>
-            </template>  -->
-
             <template v-slot:[`item.first_name`]="{ item }">
               <div v-if="item.first_name != null">
                 {{ item.first_name }} {{ item.last_name }}
               </div>
-              <div v-if="item.first_name == null">
+              <div v-else>
                 {{ item.company_name }}
               </div>
             </template>
@@ -151,7 +126,7 @@
               <div v-if="item.niid_status == 'N'">
                 <v-chip small color="warning" dark> Not Sent </v-chip>
               </div>
-              <div v-if="item.niid_status == 'Y'">
+              <div v-else-if="item.niid_status == 'Y'">
                 <v-chip small color="green" dark> Sent </v-chip>
               </div>
             </template>
@@ -160,10 +135,10 @@
               <div v-if="item?.status == 'paid'">
                 <v-chip large color="#5C7AE8" dark>Paid</v-chip>
               </div>
-              <div v-if="item?.status == 'expired'">
+              <div v-else-if="item?.status == 'expired'">
                 <v-chip large color="#E33E2B" dark>Expired</v-chip>
               </div>
-              <div v-if="item?.status == 'pending'">
+              <div v-else-if="item?.status == 'pending'">
                 <v-chip large color="warning" dark>Pending</v-chip>
               </div>
             </template>
@@ -191,11 +166,7 @@
                     >
                       <v-list-item-title>
                         <v-avatar size="20" class="mr-2">
-                          <component
-                            :is="list.icon"
-                            stroke-width="2"
-                            size="20"
-                          />
+                          <component :is="list.icon" stroke-width="2" size="20" />
                         </v-avatar>
                         {{ list.listtitle }}
                       </v-list-item-title>
@@ -206,9 +177,6 @@
             </template>
           </v-data-table-virtual>
 
-          <!-- =========================
-               PAGINATION
-               ========================= -->
           <v-row>
             <v-col cols="12" md="10">
               <v-pagination
@@ -218,9 +186,7 @@
                 dark
                 @update:modelValue="handlePageChange"
                 color="grey"
-              >
-              </v-pagination>
-              <!-- <v-pagination :value="currentPage" :length="totalPages" @input="handlePageChange"></v-pagination> -->
+              />
             </v-col>
 
             <v-col cols="12" md="2">
@@ -229,8 +195,7 @@
                 :items="pageSizes"
                 label="item per page"
                 @update:modelValue="handlePageSizeChange"
-              >
-              </v-select>
+              />
             </v-col>
           </v-row>
         </UiChildCard>
@@ -241,19 +206,14 @@
 
 <script>
 definePageMeta({
-  layout: 'motor'
+  layout: "motor",
 });
 
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, ref, onMounted, nextTick } from "vue";
 import UiChildCard from "@/components/shared/UiChildCard.vue";
-import { format } from "date-fns";
-import moment from "moment";
 import BaseButton from "@/components/ui-components/buttons/BaseButton";
 import { usePolicyStore } from "~/store/motor/thirdparty/policy";
-
-import { useRuntimeConfig } from '#imports';
-
-const config = useRuntimeConfig();
+import { useRuntimeConfig, useRouter } from "#imports";
 
 export default defineComponent({
   components: {
@@ -261,28 +221,19 @@ export default defineComponent({
     UiChildCard,
   },
   setup() {
-    const store = usePolicyStore();
+    const config = useRuntimeConfig(); // ✅ inside setup
     const router = useRouter();
+
+    const store = usePolicyStore();
     const tableActionData = store.$state.tableActionData;
+
     const policy = ref([]);
-    const date = ref(null);
     const menu1 = ref(false);
     const menu2 = ref(false);
 
-    // NEW: simple loading state
     const loading = ref(true);
+    const downloading = ref(false);
 
-    // const fromDate = ref(null)
-    // const fromDateFormatedDate = computed(() => {
-    //   return fromDate.value ? new Date(fromDate.value).toLocaleDateString() : ''
-    // })
-    // const toDate = ref(null)
-    // const toDateFormatedDate = computed(() => {
-    //   return fromDate.value ? new Date(toDate.value).toLocaleDateString() : ''
-    // })
-
-    const all_policies = ref([{ id: "1", sn: "1" }]);
-    const myPolicy = ref([]);
     const status = ref([
       { name: "All", value: "" },
       { name: "Sent", value: "Y" },
@@ -290,25 +241,18 @@ export default defineComponent({
     ]);
 
     const variant = ref([
-      {name: "Third Party", value: "Third Party"},
-      {name: "Motor Protect Extra (Private Car)", value: "Motor Protect Extra (Private Car)"},
-      {name: "Motor Protect Extra (Private Bus)", value: "Motor Protect Extra (Private Bus)"},
-      {name: "Motor Protect Extra (Own Goods)", value: "Motor Protect Extra (Own Goods)"},
-    ])
+      { name: "Third Party", value: "Third Party" },
+      { name: "Motor Protect Extra (Private Car)", value: "Motor Protect Extra (Private Car)" },
+      { name: "Motor Protect Extra (Private Bus)", value: "Motor Protect Extra (Private Bus)" },
+      { name: "Motor Protect Extra (Own Goods)", value: "Motor Protect Extra (Own Goods)" },
+    ]);
 
-    const totalItems = ref("0");
-    const itemsPerPage = ref("");
+    const totalItems = ref(0);
+    const totalPages = ref(0);
 
-    // =========================
-    // PAGINATION
-    // =========================
-    let currentPage = ref(1);
-    let totalPages = ref();
-    let pageSize = ref(25);
-    let pageSizes = ref([5, 10, 15, 20, 25]);
-
-    let page = ref(1);
-    let limit = ref(pageSize.value);
+    const page = ref(1);
+    const pageSize = ref(25);
+    const pageSizes = ref([5, 10, 15, 20, 25]);
 
     function handlePageChange(value) {
       page.value = value;
@@ -317,59 +261,177 @@ export default defineComponent({
 
     function handlePageSizeChange(value) {
       pageSize.value = value;
-      limit.value = value;
-      console.log("The page size is", value);
+      page.value = 1;
       getPolicy();
     }
 
-    onMounted(() => {
-      getPolicy();
+    // ---------------------------
+    // HELPERS
+    // ---------------------------
+    const buildPayload = (overrides = {}) => ({
+      niid_status: store.policyData.status,
+      variance: store.policyData.variant,
+      from_date: store.fromDateISO || "",
+      to_date: store.toDateISO || "",
+      page: page.value,
+      per_page: pageSize.value,
+      ...overrides,
     });
-
-    // Fetch all my policy
-    store.myPolicy()
-      .then((policy) => {
-        // console.log(policy)
-      });
 
     const getPolicy = async () => {
       loading.value = true;
       try {
-        const payload = {
-          niid_status: store.policyData.status,
-          variance: store.policyData.variant,
-          from_date: store.fromDateISO || "",
-          to_date: store.toDateISO || "",
-          page: page.value,
-          per_page: pageSize.value,
-        };
-
-        console.log("The payload is", payload);
-
+        const payload = buildPayload();
         const response = await store.myPolicy(payload);
-        if (response.status == 'success') {
-          policy.value = response.data.data;
-          totalItems.value = response.data.total;
-          // itemsPerPage.value = response.data.per_page;
-          totalPages.value = Math.ceil(response.data.total / response.data.per_page);
-          console.log("The response is", response);
-          console.log("My policy response is", response);
+
+        if (response?.status === "success") {
+          policy.value = response.data.data || [];
+          totalItems.value = response.data.total || 0;
+          totalPages.value = Math.ceil((response.data.total || 0) / (response.data.per_page || pageSize.value));
+        } else {
+          policy.value = [];
         }
       } catch (e) {
-        console.log(e);
+        console.log("getPolicy error:", e);
+        policy.value = [];
       } finally {
         loading.value = false;
       }
     };
 
+    // ✅ refresh-safe initial fetch (client only)
+    onMounted(async () => {
+      await nextTick();
+      await getPolicy();
+    });
+
+    // ---------------------------
+    // DOWNLOAD ALL FILTERED
+    // ---------------------------
+    const esc = (v) => {
+      if (v === null || v === undefined) return "";
+      return `"${String(v).replace(/"/g, '""')}"`;
+    };
+
+    const toCSV = (rows) => {
+      const columns = [
+        { label: "Policy Number", key: "policy_number" },
+        { label: "Variant", key: "variance" },
+        { label: "Registration Number", key: "registration_number" },
+        { label: "Insured Name", key: "insured_name" },
+        { label: "Policy Type", key: "policy_type" },
+        { label: "Payment Method", key: "payment_method" },
+        { label: "Amount", key: "premium" },
+        { label: "NIID Status", key: "niid_status" },
+        { label: "Status", key: "status" },
+        { label: "Date", key: "created_at" },
+      ];
+
+      const exportRows = rows.map((r) => ({
+        ...r,
+        insured_name: r.first_name
+          ? `${r.first_name} ${r.last_name || ""}`.trim()
+          : r.company_name || "",
+      }));
+
+      const headerLine = columns.map((c) => esc(c.label)).join(",");
+      const dataLines = exportRows.map((r) =>
+        columns.map((c) => esc(r[c.key])).join(",")
+      );
+
+      return [headerLine, ...dataLines].join("\n");
+    };
+
+    const downloadFile = (content, fileName, mime) => {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(url);
+    };
+
+    const makeFileName = () => {
+      const from = store.fromDateISO || "all";
+      const to = store.toDateISO || "all";
+      const v = store.policyData.variant || "all-variants";
+      const s = store.policyData.status || "all-status";
+      return `my_policies_${v}_${s}_${from}_to_${to}.csv`.replace(/\s+/g, "_");
+    };
+
+    const downloadAllFilteredCSV = async () => {
+      downloading.value = true;
+      try {
+        const EXPORT_PER_PAGE = 500;
+
+        let pageNum = 1;
+        let allRows = [];
+        let total = null;
+
+        while (true) {
+          const payload = buildPayload({ page: pageNum, per_page: EXPORT_PER_PAGE });
+          const response = await store.myPolicy(payload);
+
+          if (response?.status !== "success") break;
+
+          const dataPage = response.data.data || [];
+          if (total === null) total = response.data.total || 0;
+
+          allRows = allRows.concat(dataPage);
+
+          if (dataPage.length === 0) break;
+          if (total !== null && allRows.length >= total) break;
+
+          pageNum += 1;
+        }
+
+        if (!allRows.length) {
+          alert("No data to download for the selected filters.");
+          return;
+        }
+
+        const csv = toCSV(allRows);
+        downloadFile(csv, makeFileName(), "text/csv;charset=utf-8;");
+      } catch (e) {
+        console.log("downloadAllFilteredCSV error:", e);
+        alert("Failed to download report. Please try again.");
+      } finally {
+        downloading.value = false;
+      }
+    };
+
+    // ---------------------------
+    // ACTIONS
+    // ---------------------------
+    function linkId(item) {
+      router.push(`/motor/thirdparty/policies/${item.id}`);
+    }
+
+    // if you use this in tableActionData
+    const handlePrintCertificate = (item) => {
+      const certificateNumber = item.certificate_number;
+      const url = `${config.public.api_url}/customer/certificate?certificate_number=${encodeURIComponent(
+        certificateNumber
+      )}`;
+      window.open(url, "_blank");
+    };
+
+    function handleClick(list, item) {
+      if (list.listtitle === "View") linkId(item);
+      else if (list.listtitle === "Print Certificate") handlePrintCertificate(item);
+      // else if (list.listtitle === "Edit") editItem(item) // keep if you have it
+    }
+
     const headers = [
       { title: "Policy Number", key: "policy_number" },
       { title: "Variant", key: "variance" },
       { title: "Rrgistration Number", key: "registration_number" },
-      {
-        title: "Insured Name",
-        key: "first_name",
-      },
+      { title: "Insured Name", key: "first_name" },
       { title: "Policy Type", key: "policy_type" },
       { title: "Payment Method", key: "payment_method" },
       { title: "Amount", key: "premium" },
@@ -378,62 +440,36 @@ export default defineComponent({
       { title: "Action", key: "actions" },
     ];
 
-    function handleClick(list, item) {
-      if (list.listtitle === 'View') {
-        this.linkId(item);
-      } else if (list.listtitle === 'Edit') {
-        this.editItem(item);
-      } else if (list.listtitle === 'Print Certificate') {
- handlePrintCertificate(item);      }
-    }
-
-    function linkId(item) {
-      const id = item.id;
-      console.log("The id is ", id);
-      router.push(`/motor/thirdparty/policies/${id}`);
-      // router.push({ name: 'customer', params: { id: id } })
-    }
-
-
-    const handlePrintCertificate = (item) => {
-        const certificateNumber = item.certificate_number
-        console.log("The certificate number is", certificateNumber)
-  // Build the full URL to the certificate endpoint
-  const url = `${config.public.api_url}/customer/certificate?certificate_number=${encodeURIComponent(
-    certificateNumber
-  )}`;
-
-  // Open in a new tab (browser will either show PDF or download)
-  window.open(url, '_blank');
-};
-
     return {
       headers,
-      all_policies,
       tableActionData,
       store,
-      router,
       menu1,
       menu2,
-      date,
       status,
       variant,
-      handleClick,
-      linkId,
-      myPolicy,
-      getPolicy,
+
+      // data + loading
       policy,
       loading,
-      currentPage,
-      totalPages,
+      downloading,
+
+      // pagination
+      page,
       pageSize,
       pageSizes,
-      page,
-      limit,
+      totalPages,
+      totalItems,
       handlePageChange,
       handlePageSizeChange,
-      totalItems,
-      itemsPerPage,
+
+      // actions
+      getPolicy,
+      handleClick,
+      linkId,
+
+      // download
+      downloadAllFilteredCSV,
     };
   },
 });

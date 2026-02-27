@@ -19,6 +19,16 @@
                 >
                 </v-select>
               </v-col>
+                 <v-col cols="12" md="4">
+                <v-select
+                  label="Payment Plan"
+                  v-model="policyStore.policyData.payment_plan"
+                  :items="paymentPlanItems"
+                  item-value="value"
+                  item-title="name"
+                >
+                </v-select>
+              </v-col>
                 <v-col cols="12" md="4">
                 <v-select
                   label="Holder Type"
@@ -407,10 +417,45 @@ export default defineComponent({
       paymentMethods: [
         { name: "WALLET PAYMENT", value: "WALLET" },
         { name: "CARD/BANK PAYMENT", value: "PAYSTACK" },
-      ],
-
-      
+      ],  
     });
+
+        // Payment plan options
+    const paymentPlanAll = [
+      { name: "Annually", value: "ANNUALLY" },
+      { name: "Quarterly", value: "QUARTERLY" },
+      { name: "Half a Year", value: "HALF_YEARLY" },
+    ];
+
+    const paymentPlanLimited = [
+      { name: "Annually", value: "Annually" },
+      { name: "Half a Year", value: "Half a Year" },
+    ];
+
+    // Only EZ Drive Elite gets all plans
+      const paymentPlanItems = computed(() =>
+        policyStore.policyData.variant === "EZ Drive Elite"
+          ? paymentPlanAll
+          : paymentPlanLimited
+      );
+
+
+// Ensure selected payment_plan stays valid when variant changes
+watch(
+  () => policyStore.policyData.variant,
+  () => {
+    const selected = policyStore.policyData.payment_plan;
+
+    const stillAllowed = paymentPlanItems.value.some(
+      (item) => item.value === selected
+    );
+
+    // If they had Quarterly and switch away from Elite, reset
+    if (!stillAllowed) {
+      policyStore.policyData.payment_plan = "Annually"; // or "" if you prefer blank
+    }
+  }
+);
 
     // Fetch all vehicle years with a start year
     onMounted(() => {
@@ -431,7 +476,8 @@ export default defineComponent({
 
     const calculate =  async () => {
         const data = {
-            car_value: policyStore.policyData.car_value
+            car_value: policyStore.policyData.car_value,
+            premium_type: policyStore.policyData.payment_plan
         }
         try{
             const response = await policyStore.getPremium(data)
@@ -694,6 +740,14 @@ const formattedPremium = computed({
       });
       return;
     }
+         if(policyStore.policyData.payment_plan == "") {
+      notify({
+        title: "failed!",
+        type: "error",
+        text: "Plase Select Payment Plan",       
+      });
+      return;
+    }
      if (policyStore.policyData.holder_type == 'Individual' && policyStore.policyData.surname == "") {
       notify({
         title: "failed!",
@@ -921,6 +975,14 @@ async function initiatePaystack() {
       });
       return;
     }
+          if(policyStore.policyData.payment_plan == "") {
+      notify({
+        title: "failed!",
+        type: "error",
+        text: "Plase Select Payment Plan",       
+      });
+      return;
+    }
      if (policyStore.policyData.holder_type == 'Individual' && policyStore.policyData.surname == "") {
       notify({
         title: "failed!",
@@ -1107,8 +1169,7 @@ async function initiatePaystack() {
           holder_type: policyStore.policyData.holder_type,
           variance: policyStore.policyData.variant,
           first_name: policyStore.policyData.first_name,
-              company_name: policyStore.policyData.company_name,
-
+          company_name: policyStore.policyData.company_name,
         surname: policyStore.policyData.surname,
           premium: policyStore.policyData.premium,
           contact_address: policyStore.policyData.contact_address || policyStore.policyData.company_address,
@@ -1204,7 +1265,10 @@ async function initiatePaystack() {
       saveVehicleDetails,
       isLoading,
       errors,
-      verifyId
+      verifyId,
+      paymentPlanAll,
+      paymentPlanLimited,
+      paymentPlanItems
       
     };
   },
