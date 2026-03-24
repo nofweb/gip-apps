@@ -119,7 +119,7 @@
               </v-col>
               <v-col cols="12" md="4">
               <v-file-input
-                label="Upload Idendtification"
+                label="Upload Identification"
                 id="identification_document"
               ></v-file-input>
             </v-col>
@@ -688,7 +688,7 @@ export default defineComponent({
     const submit_btn = document.getElementById("submit_btn");
     const submit_btn_selector = document.querySelector("#submit_btn");
     submit_btn.disabled = true;
-    submit_btn_selector.innerHTML = "Buyiny Policy......" 
+    submit_btn_selector.innerHTML = "Buying Policy......" 
 
 
   const data = {
@@ -949,7 +949,7 @@ async function initiatePaystack() {
     const submit_btn = document.getElementById("submit_btn");
     const submit_btn_selector = document.querySelector("#submit_btn");
     submit_btn.disabled = true;
-    submit_btn_selector.innerHTML = "Buyiny Policy......" 
+    submit_btn_selector.innerHTML = "Buying Policy......" 
 
     const email = policyStore.policyData?.email || 'customer@example.com'
     let amountKobo = 0

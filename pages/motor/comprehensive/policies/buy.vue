@@ -129,7 +129,7 @@
               </v-col>
               <v-col cols="12" md="4">
               <v-file-input
-                label="Upload Idendtification"
+                label="Upload Identification"
                 id="identification_document"
               ></v-file-input>
             </v-col>
@@ -873,7 +873,7 @@ const formattedPremium = computed({
     const submit_btn = document.getElementById("submit_btn");
     const submit_btn_selector = document.querySelector("#submit_btn");
     submit_btn.disabled = true;
-    submit_btn_selector.innerHTML = "Buyiny Policy......" 
+    submit_btn_selector.innerHTML = "Buying Policy......" 
 
   const data = {
     holder_type: policyStore.policyData.holder_type,
@@ -1110,7 +1110,7 @@ async function initiatePaystack() {
     const submit_btn = document.getElementById("submit_btn");
     const submit_btn_selector = document.querySelector("#submit_btn");
     submit_btn.disabled = true;
-    submit_btn_selector.innerHTML = "Buyiny Policy......" 
+    submit_btn_selector.innerHTML = "Buying Policy......" 
     const email = policyStore.policyData?.email || 'customer@example.com'
     let amountKobo = Math.round((policyStore.policyData.premium) * 100)
 
