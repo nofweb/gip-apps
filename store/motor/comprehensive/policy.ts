@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "#imports";
+import { $fetch } from "ofetch";
 import {
   PlusIcon,
   EditIcon,
@@ -30,8 +31,44 @@ const policyInstance = (dashboard_object: any) => {
   });
 };
 
+const policyRequest = async (opts: {
+  path: string;
+  method: string;
+  body?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+}) => {
+  const method = (opts.method || "GET").toUpperCase();
+  const url = `${useRuntimeConfig().public.api_url}/${opts.path}`;
+  const bearer = `Bearer ${useCookie("token").value}`;
+  const headers: Record<string, string> = { Authorization: bearer };
+  if (method !== "GET" && method !== "HEAD") {
+    headers["Content-Type"] = "application/json";
+  }
+  try {
+    return await $fetch(url, {
+      method,
+      headers,
+      body: method !== "GET" && method !== "HEAD" ? opts.body : undefined,
+      query: method === "GET" && opts.params ? opts.params : undefined,
+    });
+  } catch (err: any) {
+    const data = err?.data ?? err?.response?._data;
+    if (data && typeof data === "object") return data;
+    return { status: "error", message: err?.message || "Request failed" };
+  }
+};
+
+export type EzdriveRenewPolicyPayload = {
+  variance: string;
+  id_number: string;
+  policy_type: string;
+  identification: string;
+};
+
 // 🔹 Initial state factory
 const createInitialState = () => ({
+  renewalSearchPolicy: null as Record<string, any> | null,
+
   tableActionData: [
     {
       icon: "EyeIcon",
@@ -274,6 +311,48 @@ export const usePolicyStore = defineStore("comprehensive", {
       }
       console.log("The error is", error);
       return error;
+    },
+
+    clearRenewalSearch() {
+      this.renewalSearchPolicy = null;
+    },
+
+    async searchEzdrivePolicyForRenewal(registrationNumber: string) {
+      this.renewalSearchPolicy = null;
+      const trimmed = String(registrationNumber || "").trim();
+      if (!trimmed) {
+        return { status: "error", message: "Registration number is required" };
+      }
+
+      const data: any = await policyRequest({
+        path: `ezdrive/search-policy`,
+        method: "post",
+        body: { registration_number: trimmed },
+      });
+
+      const raw = data?.data ?? data;
+      const policyRecord = Array.isArray(raw)
+        ? raw[0]
+        : raw?.data && Array.isArray(raw.data)
+          ? raw.data[0]
+          : raw;
+
+      if (policyRecord && typeof policyRecord === "object") {
+        this.renewalSearchPolicy = policyRecord;
+      }
+
+      return data;
+    },
+
+    async renewEzdrivePolicy(
+      id: number | string,
+      payload: EzdriveRenewPolicyPayload
+    ) {
+      return (await policyRequest({
+        path: `ezdrive/renew-policy/${id}`,
+        method: "post",
+        body: { ...payload },
+      })) as any;
     },
 
     // 🔹 Reset everything back to initial state

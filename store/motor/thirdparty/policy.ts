@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "#imports";
+import { $fetch } from "ofetch";
 import {
   PlusIcon,
   EditIcon,
@@ -31,9 +32,47 @@ const policyInstance = (dashboard_object: any) => {
   });
 };
 
+const policyRequest = async (opts: {
+  path: string;
+  method: string;
+  body?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+}) => {
+  const method = (opts.method || "GET").toUpperCase();
+  const url = `${useRuntimeConfig().public.api_url}/${opts.path}`;
+  const bearer = `Bearer ${useCookie("token").value}`;
+  const headers: Record<string, string> = { Authorization: bearer };
+  if (method !== "GET" && method !== "HEAD") {
+    headers["Content-Type"] = "application/json";
+  }
+  try {
+    return await $fetch(url, {
+      method,
+      headers,
+      body: method !== "GET" && method !== "HEAD" ? opts.body : undefined,
+      query: method === "GET" && opts.params ? opts.params : undefined,
+    });
+  } catch (err: any) {
+    const body = err?.data ?? err?.response?._data;
+    if (body && typeof body === "object") return body;
+    return {
+      status: "error",
+      message: err?.message || "Request failed",
+    };
+  }
+};
+
+export type RenewPolicyPayload = {
+  variance: string;
+  id_number: string;
+  policy_type: string;
+  identification: string;
+};
 
 // 🔹 Initial state factory
 const createInitialState = () => ({
+  renewalSearchPolicy: null as Record<string, any> | null,
+
   tableActionData: [
     {
       icon: "EyeIcon",
@@ -309,6 +348,45 @@ export const usePolicyStore = defineStore("third_party", {
       }
       console.log("The error is", error);
       return error;
+    },
+
+    clearRenewalSearch() {
+      this.renewalSearchPolicy = null;
+    },
+
+    async searchPolicyForRenewal(registrationNumber: string) {
+      this.renewalSearchPolicy = null;
+      const trimmed = String(registrationNumber || "").trim();
+      if (!trimmed) {
+        return { status: "error", message: "Registration number is required" };
+      }
+
+      const data: any = await policyRequest({
+        path: `customer/search`,
+        method: "post",
+        body: { registration_number: trimmed },
+      });
+
+      const raw = data?.data ?? data;
+      const policyRecord = Array.isArray(raw)
+        ? raw[0]
+        : raw?.data && Array.isArray(raw.data)
+          ? raw.data[0]
+          : raw;
+
+      if (policyRecord && typeof policyRecord === "object") {
+        this.renewalSearchPolicy = policyRecord;
+      }
+
+      return data;
+    },
+
+    async renewPolicy(id: number | string, payload: RenewPolicyPayload) {
+      return (await policyRequest({
+        path: `customer/renew/${id}`,
+        method: "post",
+        body: { ...payload },
+      })) as any;
     },
 
     // 🔹 Reset everything back to initial state

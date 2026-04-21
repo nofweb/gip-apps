@@ -3,7 +3,6 @@ import {
   BorderAllIcon,
   AlertCircleIcon,
   CircleDotIcon,
-  BoxMultiple1Icon,
   AdjustmentsHorizontalIcon,
   LayoutDashboardIcon,
 } from "vue-tabler-icons";
@@ -37,29 +36,60 @@ const sidebarItem: menu[] = [
     to: "/",
   },
 
-  {
-    title: "Quotations",
-    icon: quotation,
-    to: "/quotations",
+  { header: "Motor Insurance" },
 
+  {
+    title: "Comprehensive",
+    icon: quotation,
+    to: "#",
     children: [
       {
-        title: "All Quotation",
+        title: "My Policy",
         icon: CircleIcon,
-        to: "/quotations",
+        to: "/motor/comprehensive/policies",
       },
       {
-        title: "Generate Quotation",
+        title: "Buy Policy",
         icon: CircleIcon,
-        to: "/quotations/generate",
+        to: "/motor/comprehensive/policies/buy",
+      },
+      {
+        title: "Renew Policy",
+        icon: CircleIcon,
+        to: "/motor/comprehensive/renew",
       },
     ],
   },
-  // {
-  //   title: "Policy",
-  //   icon: AlertCircleIcon,
-  //   to: "/policy",
-  // },
+
+  {
+    title: "Third Party",
+    icon: quotation,
+    to: "#",
+    children: [
+      {
+        title: "Dashboard",
+        icon: CircleIcon,
+        to: "/motor/thirdparty",
+      },
+      {
+        title: "My Policy",
+        icon: CircleIcon,
+        to: "/motor/thirdparty/policies",
+      },
+      {
+        title: "Buy Policy",
+        icon: CircleIcon,
+        to: "/motor/thirdparty/policies/buy",
+      },
+      {
+        title: "Renew Policy",
+        icon: CircleIcon,
+        to: "/motor/thirdparty/renew",
+      },
+    ],
+  },
+
+  { header: "Marine Insurance" },
 
   {
     title: "Certificates",
@@ -86,6 +116,29 @@ const sidebarItem: menu[] = [
     icon: wallet,
     to: "/wallet",
   },
+  {
+    title: "Quotations",
+    icon: quotation,
+    to: "/quotations",
+    children: [
+      {
+        title: "All Quotation",
+        icon: CircleIcon,
+        to: "/quotations",
+      },
+      {
+        title: "Generate Quotation",
+        icon: CircleIcon,
+        to: "/quotations/generate",
+      },
+    ],
+  },
+
+  // {
+  //   title: "Policy",
+  //   icon: AlertCircleIcon,
+  //   to: "/policy",
+  // },
 
   {
     title: "Logout",
