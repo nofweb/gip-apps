@@ -209,6 +209,7 @@
 definePageMeta({
   layout: "motor",
 });
+import { useRuntimeConfig } from "#imports";
 
 import { defineComponent, ref, onMounted, nextTick } from "vue";
 import UiChildCard from "@/components/shared/UiChildCard.vue";
@@ -224,7 +225,7 @@ export default defineComponent({
   setup() {
     const store = usePolicyStore();
     const router = useRouter();
-
+    const config = useRuntimeConfig(); 
     const tableActionData = store.$state.tableActionData;
 
     const policy = ref([]);
@@ -429,10 +430,19 @@ export default defineComponent({
       router.push(`/motor/comprehensive/policies/${item.id}`);
     }
 
+        // if you use this in tableActionData
+    const handlePrintCertificate = (item) => {
+      const certificateNumber = item.certificate_number;
+      const url = `${config.public.api_url}/variance/certificate?certificate_number=${encodeURIComponent(
+        certificateNumber
+      )}`;
+      window.open(url, "_blank");
+    };
+
+
     function handleClick(list, item) {
       if (list.listtitle === "View") linkId(item);
-      // keep other actions if you actually have these functions
-      // else if (list.listtitle === "Edit") editItem(item)
+      else if (list.listtitle === "Print Certificate") handlePrintCertificate(item);
       // else if (list.listtitle === "Delete") deleteItem(item)
     }
 
@@ -462,7 +472,7 @@ export default defineComponent({
       getPolicy,
       handleClick,
       linkId,
-
+      handlePrintCertificate,
       downloadAllFilteredCSV,
     };
   },
